@@ -8,7 +8,7 @@ class User < ApplicationRecord
 
   has_many :posts
 
-  ROLES = %w{super_admin admin}
+  ROLES = %w{super_admin admin officer}
 
   def jwt_payload
     super
@@ -16,7 +16,7 @@ class User < ApplicationRecord
 
   ROLES.each do |role_name|
     define_method "#{role_name}?" do
-      role = role_name
+      role == role_name
     end
   end
 end

@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class Api::V1::PostsController < ApiController
+  load_and_authorize_resource
   before_action :set_post, only: %i[show update destroy]
 
   def index
-    # @posts = Post.all
-    @posts = current_user.posts
+    @posts = Post.all
+    # @posts = current_user.posts
     render json: @posts, status: :ok
   end
 
