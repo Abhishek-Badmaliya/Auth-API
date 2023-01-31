@@ -8,7 +8,15 @@ class User < ApplicationRecord
 
   has_many :posts
 
+  ROLES = %w{super_admin admin}
+
   def jwt_payload
     super
+  end
+
+  ROLES.each do |role_name|
+    define_method "#{role_name}?" do
+      role = role_name
+    end
   end
 end
