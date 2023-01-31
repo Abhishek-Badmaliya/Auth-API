@@ -5,7 +5,7 @@ class Api::V1::PostsController < ApiController
   before_action :set_post, only: %i[show update destroy]
 
   def index
-    @posts = Post.all
+    @posts = Post.accessible_by(current_ability)
     # @posts = current_user.posts
     render json: @posts, status: :ok
   end

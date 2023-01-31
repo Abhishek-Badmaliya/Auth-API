@@ -7,7 +7,9 @@ class Ability
     if user.super_admin?
       can :manage, :all
     elsif user.admin?
-      can :read, :all
+      # can :read, Post, user_id: user.id
+      # can :update, Post, user_id: user.id
+      can %i[read update], Post, user_id: user.id
     end
   end
 end
