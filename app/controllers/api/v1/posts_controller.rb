@@ -15,8 +15,8 @@ class Api::V1::PostsController < ApiController
   end
 
   def create
-    # @post = Post.new(post_params)
-    @post = current_user.posts.new(post_params)
+    @post = Post.new(post_params)
+    #@post = current_user.posts.new(post_params)
     if @post.save
       render json: @post, status: :ok
     else
@@ -43,8 +43,8 @@ class Api::V1::PostsController < ApiController
   private
 
   def set_post
-    # @post = Post.find(params[:id])
-    @post = current_user.posts.find(params[:id])
+    @post = Post.find(params[:id])
+    #@post = current_user.posts.find(params[:id])
   rescue ActiveRecord::RecordNotFound => e
     render json: e.message, status: :unauthorized
   end
