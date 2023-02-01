@@ -7,36 +7,40 @@ class Api::V1::PostsController < ApiController
   def index
     @posts = Post.accessible_by(current_ability)
     # @posts = current_user.posts
-    render json: @posts, status: :ok
+    render json: @posts, status: 200
   end
 
   def show
-    render json: @post, status: :ok
+    if @post
+      render json: @post, status: 200
+    else
+      render json: { error: 'Could not find the Post !' }, status: 400
+    end
   end
 
   def create
     @post = Post.new(post_params)
-    #@post = current_user.posts.new(post_params)
+    # @post = current_user.posts.new(post_params)
     if @post.save
-      render json: @post, status: :ok
+      render json: @post, status: 201
     else
-      render json: { data: @post.errors.full_messages, status: 'failed' }, status: :unprocessable_entity
+      render json: { data: @post.errors.full_messages, status: 'failed' }, status: 400
     end
   end
 
   def update
     if @post.update(post_params)
-      render json: @post, status: :ok
+      render json: @post, status: 200
     else
-      render json: { data: @post.errors.full_messages, status: 'failed' }, status: :unprocessable_entity
+      render json: { data: @post.errors.full_messages, status: 'failed' }, status: 400
     end
   end
 
   def destroy
     if @post.destroy
-      render json: { data: 'Your post has been deleted successfully !', status: 'success' }, status: :ok
+      render json: { data: 'Your post has been deleted successfully !', status: 'success' }, status: 200
     else
-      render json: { data: 'Oops, something went wrong !', status: 'failed' }
+      render json: { error: "Could not find the post with id #{params[:id]}" }, status: 400
     end
   end
 
@@ -44,9 +48,9 @@ class Api::V1::PostsController < ApiController
 
   def set_post
     @post = Post.find(params[:id])
-    #@post = current_user.posts.find(params[:id])
+    # @post = current_user.posts.find(params[:id])
   rescue ActiveRecord::RecordNotFound => e
-    render json: e.message, status: :unauthorized
+    render json: e.message, status: 401
   end
 
   def post_params
