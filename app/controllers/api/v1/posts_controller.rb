@@ -7,14 +7,24 @@ class Api::V1::PostsController < ApiController
   def index
     @posts = Post.accessible_by(current_ability)
     # @posts = current_user.posts
-    render json: @posts, status: 200
+    if @posts.present?
+      render json: @posts, status: 200
+    else
+      render json: { error: 'No posts' }, status: 404
+    end
   end
 
   def show
-    if @post
-      render json: @post, status: 200
+    render json: @post, status: 200
+  end
+
+  def search
+    @parameter = params[:title]
+    @post = Post.where('lower(title) LIKE :title', title: "%#{@parameter}%")
+    if @post != []
+      render json: @post
     else
-      render json: { error: 'Could not find the Post !' }, status: 400
+      render json: 'Oops, there were not any similar matches !', status: 404
     end
   end
 
@@ -24,24 +34,18 @@ class Api::V1::PostsController < ApiController
     if @post.save
       render json: @post, status: 201
     else
-      render json: { data: @post.errors.full_messages, status: 'failed' }, status: 400
+      render json: { error: 'Something went Wrong !' }, status: 422
     end
   end
 
   def update
-    if @post.update(post_params)
-      render json: @post, status: 200
-    else
-      render json: { data: @post.errors.full_messages, status: 'failed' }, status: 400
-    end
+    @post.update(post_params)
+    render json: @post, status: 200
   end
 
   def destroy
-    if @post.destroy
-      render json: { data: 'Your post has been deleted successfully !', status: 'success' }, status: 200
-    else
-      render json: { error: "Could not find the post with id #{params[:id]}" }, status: 400
-    end
+    @post.destroy
+    render json: { data: 'Your post has been deleted successfully !' }, status: 200
   end
 
   private

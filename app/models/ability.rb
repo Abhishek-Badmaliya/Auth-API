@@ -10,6 +10,7 @@ class Ability
       # can :read, Post, user_id: user.id
       # can :update, Post, user_id: user.id
       can %i[read update], Post, user_id: user.id
+      can :search, Post
     end
   end
 end

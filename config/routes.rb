@@ -15,4 +15,5 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
+  get 'search_post', to: 'api/v1/posts#search', as: :search_post
 end
